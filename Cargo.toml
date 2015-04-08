@@ -2,3 +2,6 @@
 name = "anybar-rust"
 version = "0.0.1"
 authors = ["Nelson Chen <crazysim@gmail.com>"]
+
+[dependencies]
+getopts = "0.2.4"
