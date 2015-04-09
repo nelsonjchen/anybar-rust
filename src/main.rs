@@ -1,11 +1,13 @@
 extern crate getopts;
 use getopts::Options;
 use std::env;
-use std::net::UdpSocket;
+use std::net::{UdpSocket,ToSocketAddrs};
 
-fn anybar(command: &str) {
-    let socket = UdpSocket::bind(("0.0.0.0", 0)).unwrap();
-    socket.send_to(command.as_bytes(), "127.0.0.1:1738").unwrap();
+pub fn send_to_anybar<A: ToSocketAddrs>(command: &str, addr: A) {
+    // Until I figure out how to build a UdpSocket without binding,
+    // this will have to do.
+    let socket = UdpSocket::bind("0.0.0.0:0").unwrap();
+    socket.send_to(command.as_bytes(), addr).unwrap();
 }
 
 fn print_usage(program: &str, opts: Options) {
@@ -18,8 +20,7 @@ fn main() {
     let program = args[0].clone();
 
     let mut opts = Options::new();
-    opts.optopt("p", "port", "port to connect to anybar. Default is 1738.", "PORT");
-    opts.optopt("a", "host", "address to connect to anybar. Default is localhost.", "HOST");
+    opts.optopt("a", "addr", "address to connect to anybar. Default is 127.0.0.1:1738.", "PORT");
     opts.optflag("h", "help", "print this help menu");
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => { m }
@@ -29,11 +30,14 @@ fn main() {
         print_usage(&program, opts);
         return;
     }
+    let addr = matches.opt_str("a").or(
+                 Some("127.0.0.1:1738".to_string())
+              ).unwrap();
     let command = if !matches.free.is_empty() {
         matches.free[0].clone()
     } else {
         print_usage(&program, opts);
         return;
     };
-    anybar(&*command);
+    send_to_anybar(&*command, &*addr);
 }
