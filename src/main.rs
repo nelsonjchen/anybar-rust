@@ -20,7 +20,7 @@ fn main() {
     let program = args[0].clone();
 
     let mut opts = Options::new();
-    opts.optopt("a", "addr", "address to connect to anybar. Default is 127.0.0.1:1738.", "PORT");
+    opts.optopt("a", "addr", "address to connect to anybar. Default is 127.0.0.1:1738.", "ADDRESS");
     opts.optflag("h", "help", "print this help menu");
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => { m }
