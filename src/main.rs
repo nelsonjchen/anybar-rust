@@ -4,8 +4,6 @@ use std::env;
 use std::net::{UdpSocket,ToSocketAddrs};
 
 pub fn send_to_anybar<A: ToSocketAddrs>(command: &str, addr: A) {
-    // Until I figure out how to build a UdpSocket without binding,
-    // this will have to do.
     let socket = UdpSocket::bind("0.0.0.0:0").unwrap();
     socket.send_to(command.as_bytes(), addr).unwrap();
 }
